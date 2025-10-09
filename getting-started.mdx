@@ -1,0 +1,167 @@
+---
+title: Getting Started
+description: Metios lets you collect feedback effortlessly by embedding surveys directly into your website or web app. Follow this guide to embed your first survey in just a few minutes.
+---
+
+## Quick Embed
+
+Add the following script before the closing `</body>` tag of your page:
+
+```html
+<script src="https://cdn.metios.app/embed.js" async></script>
+<script>
+  Metios.init({
+    surveyId: 'example-id',
+  });
+</script>
+```
+
+That’s it — Metios will automatically fetch your survey configuration and display it based on its trigger settings.
+
+---
+
+## How It Works
+
+The Metios embed script dynamically loads a survey widget into your page using an `<iframe>`. It handles:
+
+- **Fetching your survey configuration** from the Metios API  
+- **Auto-triggering** based on configured behavior  
+- **Responsive positioning and resizing** for different devices  
+- **Smooth animations** and viewport-safe rendering  
+
+---
+
+## Configuration Options
+
+You can customize the behavior and placement of your survey using optional configuration parameters.
+
+| Option | Type | Default | Description |
+|--------|------|----------|-------------|
+| `surveyId` | `string` | — | The unique ID of your survey (required). |
+| `position` | `string` | `'bottom-right'` | The position of the floating survey widget. |
+| `inlineSelector` | `string` | `null` | CSS selector for inline embedding. |
+| `width` | `string` | `'450px'` | Widget width (ignored if inline). |
+| `initialHeight` | `number` | `220` | Initial widget height before resizing. |
+| `zIndex` | `string` | `'999999'` | Stack order for layering over other content. |
+| `timeSeconds` | `number` | `5` | Delay for `time` trigger (in seconds). |
+| `scrollPercent` | `number` | `50` | Scroll trigger threshold. |
+| `viewportMargin` | `number` | `40` | Margin used when clamping widget to viewport. |
+
+---
+
+## Examples
+
+<Tabs>
+<Tab title="Page Load (default)">
+
+A default embed will use the settings that are setup in the [survey settings](https://app.metios.app).
+
+```html
+<script src="https://cdn.metios.app/embed.js" async></script>
+<script>
+  Metios.init({
+    surveyId: 'example-id'
+  });
+</script>
+```
+
+</Tab>
+
+<Tab title="Timed Trigger">
+
+```html
+<script src="https://cdn.metios.app/embed.js" async></script>
+<script>
+  Metios.init({
+    surveyId: 'example-id',
+    trigger: 'time',
+    timeSeconds: 10
+  });
+</script>
+```
+
+</Tab>
+
+<Tab title="Scroll Trigger">
+
+```html
+<script src="https://cdn.metios.app/embed.js" async></script>
+<script>
+  Metios.init({
+    surveyId: 'example-id',
+    trigger: 'scroll',
+    scrollPercent: 75
+  });
+</script>
+```
+
+</Tab>
+
+<Tab title="Inline Embed">
+
+```html
+<div id="feedback-section"></div>
+
+<script src="https://cdn.metios.app/embed.js" async></script>
+<script>
+  Metios.init({
+    surveyId: 'example-id',
+    trigger: 'inline',
+    inlineSelector: '#feedback-section'
+  });
+</script>
+```
+
+</Tab>
+</Tabs>
+
+---
+
+## Widget Behavior
+
+Metios automatically handles:
+
+- **Auto-resizing:** The widget adjusts its height dynamically based on content.  
+- **Auto-scroll:** Ensures the full widget remains visible in the viewport.  
+- **Close event:** The widget can be dismissed, removing it cleanly from the DOM.  
+- **Responsive design:** The widget looks great on desktop and mobile.
+
+<Note>
+Metios widgets are optimized to remain visible and accessible across all screen sizes, automatically adjusting based on viewport changes.
+</Note>
+
+---
+
+## Versioning
+
+Each embed script is versioned for transparency:
+
+```
+// Metios Embed Script
+// Version: 1.0.4-dynamic (auto-scroll to keep full widget visible)
+```
+
+You’ll always receive the latest stable version automatically when loading from the CDN.
+
+---
+
+## Troubleshooting
+
+If your survey doesn’t appear:
+
+<Warning>
+- Ensure your `surveyId` is valid and published.  
+- Check your browser console for any network errors fetching `/api/embed/{surveyId}`.  
+- Make sure the embed script is included **before the closing `</body>` tag**.  
+- If using inline mode, verify that the target element (`inlineSelector`) exists in the DOM.
+</Warning>
+
+---
+
+## Next Steps
+
+- [Creating Surveys →](/surveys/creation)
+
+---
+
+Need help? Contact us at [support@metios.app](mailto:support@metios.app).
