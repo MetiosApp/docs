@@ -19,21 +19,7 @@
               "index",
               "getting-started"
             ]
-          },
-          {
-            "group": "Surveys",
-            "pages": [
-              "surveys/creation"
-            ]
-          },
-          {
-            "group": "API Reference",
-            "pages": [
-              "api/introduction",
-              "api/authentication",
-              "api/survey-insights"
-            ]
-          }
+          }          
         ]
       }
     ]
