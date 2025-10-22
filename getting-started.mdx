@@ -3,7 +3,7 @@ title: Getting Started
 description: Metios lets you collect feedback effortlessly by embedding surveys directly into your website or web app. Follow this guide to embed your first survey in just a few minutes.
 ---
 
-## Quick Embed
+## Quick Start
 
 Add the following script before the closing `</body>` tag of your page:
 
@@ -11,12 +11,12 @@ Add the following script before the closing `</body>` tag of your page:
 <script src="https://cdn.metios.app/embed.js" async></script>
 <script>
   Metios.init({
-    surveyId: 'example-id',
+    surveyId: 'your-survey-uuid',
   });
 </script>
 ```
 
-That’s it — Metios will automatically fetch your survey configuration and display it based on its trigger settings.
+That's it! Metios will automatically fetch your survey configuration and display it based on the trigger settings configured in your dashboard.
 
 ---
 
@@ -24,80 +24,88 @@ That’s it — Metios will automatically fetch your survey configuration and di
 
 The Metios embed script dynamically loads a survey widget into your page using an `<iframe>`. It handles:
 
-- **Fetching your survey configuration** from the Metios API  
-- **Auto-triggering** based on configured behavior  
-- **Responsive positioning and resizing** for different devices  
-- **Smooth animations** and viewport-safe rendering  
+- **Fetching survey configuration** from the Metios API at `/api/embed/{uuid}`
+- **Auto-triggering** based on the configured behavior (page load, scroll, exit intent, inline)
+- **Responsive positioning and resizing** for different devices
+- **Smooth animations** with viewport-safe rendering
+- **Auto-scroll functionality** to keep the widget visible when it expands
+
+The widget automatically adjusts its height based on content and ensures it stays within the viewport boundaries.
 
 ---
 
 ## Configuration Options
 
-You can customize the behavior and placement of your survey using optional configuration parameters.
+The embed script supports both automatic configuration (fetched from your dashboard) and manual overrides:
 
-| Option | Type | Default | Description |
-|--------|------|----------|-------------|
-| `surveyId` | `string` | — | The unique ID of your survey (required). |
-| `position` | `string` | `'bottom-right'` | The position of the floating survey widget. |
-| `inlineSelector` | `string` | `null` | CSS selector for inline embedding. |
-| `width` | `string` | `'450px'` | Widget width (ignored if inline). |
-| `initialHeight` | `number` | `220` | Initial widget height before resizing. |
-| `zIndex` | `string` | `'999999'` | Stack order for layering over other content. |
-| `timeSeconds` | `number` | `5` | Delay for `time` trigger (in seconds). |
-| `scrollPercent` | `number` | `50` | Scroll trigger threshold. |
-| `viewportMargin` | `number` | `40` | Margin used when clamping widget to viewport. |
+### Required Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `surveyId` | `string` | The unique UUID of your survey (required) |
+
+### Optional Override Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `apiHost` | `string` | `'https://api.metios.app'` | API endpoint for fetching survey config |
+| `environment` | `string` | Auto-detected | Force 'dev' or 'production' environment |
+| `trigger` | `string` | From dashboard | Override trigger type ('page_load', 'scroll', 'exit-intent', 'inline') |
+| `position` | `string` | From dashboard | Widget position ('bottom-right', 'bottom-left', 'top-right', 'top-left', 'center') |
+| `inlineSelector` | `string` | From dashboard | CSS selector for inline embedding |
+| `width` | `string` | `'450px'` | Widget width (ignored for inline mode) |
+| `initialHeight` | `number` | `220` | Initial widget height before auto-resize |
+| `zIndex` | `string` | `'999999'` | CSS z-index for layering |
+| `timeSeconds` | `number` | From dashboard | Delay for time-based triggers |
+| `scrollPercent` | `number` | From dashboard | Scroll percentage trigger threshold |
+| `viewportMargin` | `number` | `40` | Margin for viewport clamping (total pixels) |
 
 ---
 
-## Examples
+## Trigger Types
 
-<Tabs>
-<Tab title="Page Load (default)">
-
-A default embed will use the settings that are setup in the [survey settings](https://app.metios.app).
+### Page Load (Default)
+Displays the survey after a specified time delay when the page loads.
 
 ```html
 <script src="https://cdn.metios.app/embed.js" async></script>
 <script>
   Metios.init({
-    surveyId: 'example-id'
+    surveyId: 'your-survey-uuid'
+    // Uses settings from dashboard
   });
 </script>
 ```
 
-</Tab>
-
-<Tab title="Timed Trigger">
-
-```html
-<script src="https://cdn.metios.app/embed.js" async></script>
-<script>
-  Metios.init({
-    surveyId: 'example-id',
-    trigger: 'time',
-    timeSeconds: 10
-  });
-</script>
-```
-
-</Tab>
-
-<Tab title="Scroll Trigger">
+### Scroll Trigger
+Shows the survey when the user scrolls to a specific percentage of the page.
 
 ```html
 <script src="https://cdn.metios.app/embed.js" async></script>
 <script>
   Metios.init({
-    surveyId: 'example-id',
+    surveyId: 'your-survey-uuid',
     trigger: 'scroll',
-    scrollPercent: 75
+    scrollPercent: 75  // Override dashboard setting
   });
 </script>
 ```
 
-</Tab>
+### Exit Intent
+Triggers when the user moves their cursor toward the browser's close button or address bar.
 
-<Tab title="Inline Embed">
+```html
+<script src="https://cdn.metios.app/embed.js" async></script>
+<script>
+  Metios.init({
+    surveyId: 'your-survey-uuid',
+    trigger: 'exit-intent'
+  });
+</script>
+```
+
+### Inline Embed
+Embeds the survey directly into a specific element on your page.
 
 ```html
 <div id="feedback-section"></div>
@@ -105,63 +113,228 @@ A default embed will use the settings that are setup in the [survey settings](ht
 <script src="https://cdn.metios.app/embed.js" async></script>
 <script>
   Metios.init({
-    surveyId: 'example-id',
+    surveyId: 'your-survey-uuid',
     trigger: 'inline',
     inlineSelector: '#feedback-section'
   });
 </script>
 ```
 
-</Tab>
-</Tabs>
+---
+
+## Widget Positions
+
+For floating widgets (non-inline), you can position the widget in different areas:
+
+- `bottom-right` (default) - Bottom right corner
+- `bottom-left` - Bottom left corner  
+- `top-right` - Top right corner
+- `top-left` - Top left corner
+- `center` - Centered on screen
+
+```html
+<script>
+  Metios.init({
+    surveyId: 'your-survey-uuid',
+    position: 'top-left'
+  });
+</script>
+```
 
 ---
 
-## Widget Behavior
+## Automatic Features
 
-Metios automatically handles:
+### Dynamic Resizing
+The widget automatically adjusts its height based on content and sends resize messages to the parent window. The embed script:
+- Listens for resize messages from the widget
+- Clamps height to viewport with configurable margin
+- Only applies meaningful height changes (6px threshold by default)
 
-- **Auto-resizing:** The widget adjusts its height dynamically based on content.  
-- **Auto-scroll:** Ensures the full widget remains visible in the viewport.  
-- **Close event:** The widget can be dismissed, removing it cleanly from the DOM.  
-- **Responsive design:** The widget looks great on desktop and mobile.
+### Auto-Scroll
+When the widget resizes, it ensures the entire widget remains visible by:
+- Checking if the widget extends beyond viewport boundaries
+- Automatically scrolling the parent page minimally to reveal hidden content
+- Using 12px margins from viewport edges for comfortable viewing
 
-<Note>
-Metios widgets are optimized to remain visible and accessible across all screen sizes, automatically adjusting based on viewport changes.
-</Note>
+### Responsive Design
+- Mobile-friendly responsive design
+- Minimum width of 280px maintained
+- Automatic width adjustment for inline embeds (100% of container)
 
 ---
 
-## Versioning
+## API Endpoints
 
-Each embed script is versioned for transparency:
+The embed system uses these public API endpoints:
 
+### Get Survey Configuration
 ```
-// Metios Embed Script
-// Version: 1.0.4-dynamic (auto-scroll to keep full widget visible)
+GET /api/embed/{uuid}
 ```
 
-You’ll always receive the latest stable version automatically when loading from the CDN.
+Returns survey configuration including:
+- Survey metadata (title, description, theme)
+- Questions and options
+- Trigger settings (type, timing, positioning)
+- Subscription status
+
+### Submit Response
+```
+POST /api/embed/{uuid}/submit
+```
+
+Accepts survey responses with:
+- Answers object with question responses  
+- Automatic IP address, user agent, and referrer capture
+- Country code detection (optional)
+
+---
+
+## Survey Requirements
+
+For a survey to be embeddable:
+
+1. **Survey Status**: Must be set to `'active'` status
+2. **Valid UUID**: Survey must exist in the database
+3. **Questions**: At least one question configured
+4. **Trigger Settings**: Properly configured in the dashboard
+
+**Note**: Inactive surveys return a 403 status and will not display the widget.
 
 ---
 
 ## Troubleshooting
 
-If your survey doesn’t appear:
+### Widget Not Appearing
 
-<Warning>
-- Ensure your `surveyId` is valid and published.  
-- Check your browser console for any network errors fetching `/api/embed/{surveyId}`.  
-- Make sure the embed script is included **before the closing `</body>` tag**.  
-- If using inline mode, verify that the target element (`inlineSelector`) exists in the DOM.
-</Warning>
+1. **Check Survey Status**: Ensure your survey is set to "Active" in your dashboard
+2. **Verify Survey ID**: Confirm you're using the correct UUID (not the internal database ID)
+3. **Console Errors**: Check browser console for API errors:
+   - `404` - Survey not found (check UUID)
+   - `403` - Survey not active or not available
+4. **Script Loading**: Ensure the embed script loads before initialization
+5. **Inline Target**: For inline mode, verify the target element exists in DOM
+
+### Common Issues
+
+```javascript
+// ❌ Wrong - using internal ID instead of UUID  
+surveyId: '123'
+
+// ✅ Correct - using survey UUID
+surveyId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
+```
+
+```html
+<!-- ❌ Wrong - script after initialization -->
+<script>
+  Metios.init({ surveyId: 'uuid' });
+</script>
+<script src="https://cdn.metios.app/embed.js" async></script>
+
+<!-- ✅ Correct - embed script loaded first -->
+<script src="https://cdn.metios.app/embed.js" async></script>
+<script>
+  Metios.init({ surveyId: 'uuid' });
+</script>
+```
+
+### Debug Information
+
+The embed script includes version information in console:
+```
+// Metios Embed Script  
+// Version: 1.0.4-dynamic (auto-scroll to keep full widget visible)
+```
+
+For additional debugging, check the network tab for API calls to `/api/embed/{uuid}`.
+
+---
+
+## Advanced Configuration
+
+### Custom API Host
+For testing or custom deployments:
+
+```html
+<script>
+  Metios.init({
+    surveyId: 'your-survey-uuid',
+    apiHost: 'https://your-custom-api.com',
+    environment: 'dev'  // or 'production'
+  });
+</script>
+```
+
+### Multiple Surveys
+You can embed multiple surveys on the same page:
+
+```html
+<script src="https://cdn.metios.app/embed.js" async></script>
+<script>
+  // First survey
+  Metios.init({
+    surveyId: 'survey-1-uuid',
+    position: 'bottom-right'
+  });
+
+  // Second survey  
+  Metios.init({
+    surveyId: 'survey-2-uuid',
+    trigger: 'inline',
+    inlineSelector: '#feedback-2'
+  });
+</script>
+```
+
+---
+
+## Security & Privacy
+
+- All survey data is transmitted securely via HTTPS
+- IP addresses and user agents are captured for analytics (configurable)
+- No cookies or local storage used by the widget
+- GDPR compliant data collection
+- Referrer URLs captured for traffic analysis
+
+---
+
+## Performance
+
+The Metios embed is optimized for performance:
+
+- **Lazy Loading**: Widget content loaded only when triggered
+- **Minimal Bundle**: Lightweight JavaScript footprint
+- **CDN Delivery**: Fast global content delivery
+- **Async Loading**: Non-blocking script loading
+- **Efficient Messaging**: Minimal parent-iframe communication
+
+---
+
+## Version Information
+
+Current embed version: **1.0.4-dynamic**
+
+Features:
+- Auto-scroll to keep full widget visible
+- Dynamic height adjustment with viewport clamping
+- Reduced jitter with height change thresholds
+- Improved cross-browser compatibility
+
+---
+
+## Support
+
+- **Documentation**: [https://docs.metios.app](https://docs.metios.app)
+- **Dashboard**: [https://app.metios.app](https://app.metios.app)  
+- **Support**: [support@metios.app](mailto:support@metios.app)
 
 ---
 
 ## Next Steps
 
-- [Creating Surveys →](/surveys/creation)
-
----
-
-Need help? Contact us at [support@metios.app](mailto:support@metios.app).
+- [Creating Your First Survey →](/surveys/creation)
+- [Customizing Survey Themes →](/surveys/theming)  
+- [Managing Survey Responses →](/surveys/responses)
+- [Advanced Triggers & Targeting →](/surveys/triggers)
